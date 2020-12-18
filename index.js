@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, ApolloError } = require("apollo-server");
 const SessionAPI = require("./datasources/sessions");
 const SpeakerAPI = require("./datasources/speakers");
 //Setting up the models that can be queried dynamically
@@ -15,7 +15,20 @@ const dataSources = () => ({
 });
 
 //Initialising the server and expressing we are using our schema that we setup (typeDefs), which queries that can be send (resolvers) and our repositories (dataSources)
-const server = new ApolloServer({ typeDefs, resolvers, dataSources });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources,
+  debug: true,
+  formatError: (err) => {
+    console.log(err);
+    if (err.extensions.code == "GRAPHQL_VALIDATION_FAILED") {
+      return new ApolloError("We are having some trouble", "ERROR", {
+        token: "uniquetoken",
+      });
+    }
+  },
+});
 
 //Start server
 server

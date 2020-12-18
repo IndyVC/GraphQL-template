@@ -16,6 +16,18 @@ class SessionAPI extends DataSource {
   getSessionById(id) {
     return sessions.find((s) => s.id === parseInt(id));
   }
+
+  toggleFavoriteSession(id) {
+    const session = sessions.find((s) => s.id === parseInt(id));
+    session.favorite = !session.favorite;
+    return session;
+  }
+
+  addSession(session) {
+    session.id = 1998;
+    sessions.push(session);
+    return session;
+  }
 }
 
 module.exports = SessionAPI;
